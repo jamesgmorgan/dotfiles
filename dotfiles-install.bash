@@ -1,4 +1,4 @@
-git clone --bare git@github.com:jamesgmorgan/.dotfile.git $HOME/.dotfiles
+git clone --bare git@github.com:jamesgmorgan/.dotfiles.git $HOME/.dotfiles
 function dotfiles {
    /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@
 }
@@ -12,3 +12,8 @@ if [ $? = 0 ]; then
 fi;
 dotfiles checkout
 dotfiles config status.showUntrackedFiles no
+
+# This is needed to get history on a revert, see:
+# https://groups.google.com/forum/#!topic/git-users/stW21F_eNmI
+# https://stackoverflow.com/questions/18784097/difference-between-different-refspecs-in-a-git-pull-call/18787744#18787744
+dotfiles config --add remote.origin.fetch '+refs/*:refs/*'
