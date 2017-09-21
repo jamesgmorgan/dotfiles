@@ -1,14 +1,18 @@
-git clone --bare git@github.com:jamesgmorgan/.dotfiles.git $HOME/.dotfiles
+#!/bin/bash -e
+
 function dotfiles {
    /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME $@
 }
-mkdir -p .dotfiles-backup
-dotfiles checkout
-if [ $? = 0 ]; then
-  echo "Checked out dotfiles.";
-  else
-    echo "Backing up pre-existing dot files.";
-    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .dotfiles-backup/{}
+
+git clone --bare git@github.com:jamesgmorgan/.dotfiles.git $HOME/.dotfiles
+
+backupFolder=~/.dotfiles-backup
+mkdir -p $backupFolder
+
+dotfiles checkout > /dev/null 2>&1 || exitStatus=1
+if [ "$exitStatus" == "1" ]; then
+    echo "Backing up pre-existing dot files to ${backupFolder}";
+    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} ${backupFolder}/{}
 fi;
 dotfiles checkout
 dotfiles config status.showUntrackedFiles no
