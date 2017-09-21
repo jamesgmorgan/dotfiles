@@ -12,6 +12,7 @@ mkdir -p $backupFolder
 dotfiles checkout > /dev/null 2>&1 || exitStatus=1
 if [ "$exitStatus" == "1" ]; then
     echo "Backing up pre-existing dot files to ${backupFolder}";
+    cd ~
     dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} ${backupFolder}/{}
 fi;
 dotfiles checkout
